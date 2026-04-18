@@ -4,13 +4,13 @@
 #include "pid_controller.hpp"
 
 /**
- * AURA-PULSE | Dual-Rate Flight Core
+ * MERGEN-PULSE | Dual-Rate Flight Core
  * Loop A (1000Hz): Real-time stabilization & PWM output.
  * Loop B (100Hz): Mission logic, Telemetry, and EA Pulse syncing.
  */
 
 int main() {
-    std::cout << "[MAIN] Aura-Pulse Flight Core Booting..." << std::endl;
+    std::cout << "[MAIN] Mergen-Pulse Flight Core Booting..." << std::endl;
 
     // Initialization: Roll, Pitch, Yaw controllers
     PIDController roll_ctrl(1.5, 0.1, 0.05, 0.001);
@@ -26,9 +26,6 @@ int main() {
         auto now = std::chrono::steady_clock::now();
         
         // --- LOOP A (1000Hz) ---
-        // Simulating 1ms sleep for the fast loop
-        // In real HW, this would be triggered by a Timer Interrupt.
-        
         double roll_out = roll_ctrl.calculate(0, 0.5, -1, 1);
         double pitch_out = pitch_ctrl.calculate(0, -0.2, -1, 1);
         
@@ -40,7 +37,6 @@ int main() {
             if (ticks % 1000 == 0) {
                 std::cout << "[TELEMETRY] Mission State: NOMINAL | Ticks: " << ticks << std::endl;
             }
-            
             last_loop_b = now;
         }
 
@@ -50,6 +46,6 @@ int main() {
         std::this_thread::sleep_for(std::chrono::microseconds(1000));
     }
 
-    std::cout << "[MAIN] Aura-Pulse Flight Core Shutdown." << std::endl;
+    std::cout << "[MAIN] Mergen-Pulse Flight Core Shutdown." << std::endl;
     return 0;
 }

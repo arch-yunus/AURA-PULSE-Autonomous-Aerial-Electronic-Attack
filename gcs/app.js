@@ -1,8 +1,8 @@
-// AURA-EDGE | Tactical GCS Logic
+// MERGEN-PULSE | Tactical GCS Logic
 // Manages telemetry streams, HUD interactivity, and Electronic Attack (EA) payloads
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("AURA-EDGE Tactical GCS Initialized.");
+(function() {
+    console.log("MERGEN-PULSE Tactical GCS Initialized.");
     
     // Elements
     const clockEl = document.getElementById('clock');
@@ -64,15 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (logsEl.children.length > 8) logsEl.lastChild.remove();
 
         if (persist) {
-            let history = JSON.parse(localStorage.getItem('aura_mission_logs') || "[]");
+            let history = JSON.parse(localStorage.getItem('mergen_mission_logs') || "[]");
             history.unshift(logMsg);
-            localStorage.setItem('aura_mission_logs', JSON.stringify(history.slice(0, 50)));
+            localStorage.setItem('mergen_mission_logs', JSON.stringify(history.slice(0, 50)));
         }
     };
 
     // Initialize logs from memory
     const initLogs = () => {
-        let history = JSON.parse(localStorage.getItem('aura_mission_logs') || "[]");
+        let history = JSON.parse(localStorage.getItem('mergen_mission_logs') || "[]");
         history.reverse().forEach(msg => {
             const entry = document.createElement('div');
             entry.textContent = msg;
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Visual feedback
             document.body.style.filter = "invert(1) contrast(2)";
-            setTimeout(() => { document.body.style.filter = "none"; }, 150);
+            setTimeout(() => { document.body.style.filter = "none"; console.log("[MAIN] Mergen-Pulse Flight Core Booting..."); }, 150);
             
             addLog("CRITICAL: HPM BURST EMITTED - AREA NEUTRALIZED");
             

@@ -1,4 +1,4 @@
-# AURA-PULSE | Standardized Development Environment
+# MERGEN-PULSE | Standardized Development Environment
 # Targeted for cross-compilation and tactical simulation.
 
 FROM debian:bookworm-slim

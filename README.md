@@ -1,15 +1,15 @@
-# 🚀 AURA-PULSE: Kinetic Intelligence & Tactical Rocket-Drone Framework
+# 🚀 AURA-PULSE: Kinetic Intelligence & Tactical Electronic Attack Framework
 
 ![Banner](assets/banner.png)
 
 ![Version](https://img.shields.io/badge/Version-12.0--ALPHA-blue?style=for-the-badge)
 ![Architecture](https://img.shields.io/badge/Architecture-Vertical%20Jet--VTOL-black?style=for-the-badge)
-![Speed](https://img.shields.io/badge/Vmax-385%2B%20km%2Fh-red?style=for-the-badge)
-![AI](https://img.shields.io/badge/AI-Budak%20Engine%20v4.0-orange?style=for-the-badge)
+![Payload](https://img.shields.io/badge/Payload-HPM--Directed%20Energy-red?style=for-the-badge)
+![AI](https://img.shields.io/badge/AI-Budak%20Engine%20v4.2-orange?style=for-the-badge)
 
 > **"Faciendo nomen ponis."** (Yaparsan adını koyarsın.)
 > 
-> Aura-Pulse (Aura-Edge); yüksek hızlı, dikey gövdeli (Vertical Airframe), jet destekli VTOL ve tam otonom mühimmat platformları için geliştirilmiş **Heterojen İşlem Mimarisi** tabanlı bir işletim ve kontrol ekosistemidir.
+> **Aura-Pulse**, gökyüzünde mutlak elektronik hakimiyet kurmak için tasarlanmış bir platformdur. Sadece vurucu bir drone değil, menzilindeki her türlü elektronik sistemi (drone sürüleri, yer istasyonları, sensörler) saniyeler içinde saf dışı bırakan bir **"Uçan Elektronik Harp Bataryası"**'dır.
 
 ---
 
@@ -19,80 +19,88 @@ Aura-Pulse, **Silicon-First** yaklaşımıyla FPGA üzerinde donanımsal hızlan
 
 ```mermaid
 graph TD
-    A[Aura-Edge Core] --> B[RPU: Flight Safety]
+    A[Aura-Pulse Core] --> B[RPU: Flight Safety]
     A --> C[APU: Mission AI]
-    A --> D[FPGA: DPU & Encryption]
+    A --> D[FPGA: DPU & EA Pulse Core]
     
     B --> B1[Lock-Step R5F Core]
     B --> B2[1000Hz PID Loop]
     
     C --> C1[Budak Engine: Pruning]
-    C --> C2[Threat Analysis Module]
+    C --> C2[Swarm Prioritizer AI]
     
     D --> D1[Hardware AES-256]
     D --> D2[7GHz FHSS Engine]
+    D --> D3[HPM Module: Hard-Kill]
 ```
 
 ---
 
-## 🧠 2. "Budak" Optimizasyon Doktrini
+## ⚡ 2. Elektronik Harp & HPM Doktrini
 
-Sistemin kalbinde, Edge-AI modellerini mühimmat kısıtlarına göre optimize eden **Budak Engine** yer alır:
+Aura-Pulse, menzilindeki tehditleri "temizlemek" için gelişmiş **High-Power Microwave (HPM)** protokollarını kullanır:
+- **Hard-Kill (AOD):** 150 metre yarıçapındaki tüm elektronik devreleri EMP ile kalıcı olarak yakar.
+- **Swarm Prioritizer:** Sürü saldırılarında merkezi noktayı (Centroid) hesaplayarak tek atışla maksimum imha sağlar.
+- **EMI Hardening:** Kendi HPM darbesinden korunmak için özel Faraday kafesi mimarisine sahiptir.
+
+---
+
+## 🧠 3. "Budak" Optimizasyon Doktrini
+
 - **HAAP (Hardware-Aware Adaptive Pruning):** FPGA systolic array yapısına uygun blok bazlı budama.
 - **QAT (Quantization Aware Training):** INT8 hassasiyetinde, sıfır gecikme ile yüksek doğruluklu hedefleme.
 - **Passive Vision-Only Tracking:** Elektronik harp (Jamming) altında GPS bağımsız navigasyon.
 
 ---
 
-## 📊 3. Global Rakip Analizi (Tactical Benchmark)
+## 📊 4. Global Rakip Analizi (Tactical Benchmark)
 
-| Platform | Ülke | Mimari | Eksik Yönü | **Aura-Pulse Üstünlüğü** |
+| Platform | Ülke | Mimari | Yetenek | **Aura-Pulse Üstünlüğü** |
 | :--- | :--- | :--- | :--- | :--- |
-| **Anduril Roadrunner** | 🇺🇸 | Jet-VTOL | Yüksek Lojistik Maliyet | **Ekonomik & Ölçeklenebilir** |
-| **Raytheon Coyote** | 🇺🇸 | Radar Güdümlü | Aktif RF Bağımlılığı | **Passive Vision-Only Tracking** |
-| **Aura-Pulse** | 🇹🇷 | **Hybrid MPSoC** | - | **Hardened Lock-Step Core** |
+| **Anduril Roadrunner** | 🇺🇸 | Jet-VTOL | Kinetik | **HPM Directed Energy** |
+| **Raytheon Coyote** | 🇺🇸 | Launchable | Multi-role | **Adaptive GaN Solid-State** |
+| **Aura-Pulse** | 🇹🇷 | **Hybrid MPSoC** | **Area Neutralization** | **Hardened Lock-Step Architecture** |
 
 ---
 
-## 📂 4. Repo Hiyerarşisi
+## 📂 5. Repo Hiyerarşisi
 
 ```bash
 📦 hardware/          # RF tasarımları ve BOM listeleri
-  ┗ 📂 pcb/           # Altium/KiCad Files
 📦 firmware/
   ┣ 📂 flight-core/    # RPU Lock-Step autopilot (C++)
   ┗ 📂 os-layer/       # Yocto/meta-aura layer
 📦 ai_guidance/
-  ┣ 📂 detector/       # Seeker (YOLOv8) & Threat Analyzer
+  ┣ 📂 detector/       # Seeker & Swarm Prioritizer
   ┗ 📂 optimizer/      # Budak Engine: Pruning & Quantization
-📦 protocols/         # Hardware AES-256 & FHSS Telemetry
-📦 gcs/               # Cyber-Military Web HUD (HTML/CSS)
+📦 protocols/
+  ┣ 📂 electronic_attack/ # HPM Pulse Core (Hard-Kill)
+  ┗ 📂 cryptology/     # Hardware AES-256 & FHSS
+📦 gcs/               # Cyber-Military Web HUD (HPM Dashboard)
 📦 simulation/        # Digital Twin & Tactical Logs
-📦 DOCS/              # Technical Specs & Aesthetics Manifesto
+📦 DOCS/              # Technical Specs & EA Protocols
 ```
 
 ---
 
-## 🚀 5. Hızlı Başlangıç (Developer Guide)
+## 🚀 6. Hızlı Başlangıç (Developer Guide)
 
 ### Ortam Hazırlığı
 ```bash
-# Bağımlılıkları yükleyin
 make setup
 ```
 
-### Digital Twin Simülasyonu
-Aura-Pulse kontrol döngülerini ve AI seeker mantığını test etmek için:
+### Digital Twin Simülasyonu (HPM Test)
 ```bash
 make sim
 ```
 
 ### GCS HUD Arayüzü
-Yer istasyonu panelini görüntülemek için `gcs/index.html` dosyasını tarayıcıda açın.
+GCS panelini açın ve **"CHARGE"** sekmesinden HPM banklarını doldurup **"FIRE BURST"** ile alanı temizleyin.
 
 ---
 
-## 🛡️ 6. Güvenlik ve Etik
-Aura-Pulse, **CERN Engineering** prensipleri ve **Aura-Edge Tactical** standartları çerçevesinde geliştirilmiştir. Detaylar için [SECURITY.md](SECURITY.md) dosyasını inceleyin.
+## 🛡️ 7. Güvenlik ve Etik
+Aura-Pulse, taktik seviye sinyal disiplini ve yüksek güvenlik standartlarında geliştirilmiştir. Detaylar için [SECURITY.md](SECURITY.md) dosyasını inceleyin.
 
 **"Er odur ki Dünya'da koya bir eser; esersiz kişinin yerinde yeller eser."** 🛰️

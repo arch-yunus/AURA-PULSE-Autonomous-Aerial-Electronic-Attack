@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# C++ Build
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.exe
+*.dll
+*.app
+
+# Xilinx / FPGA
+*.bit
+*.bit.bin
+*.xsa
+*.hdf
+.Xil/
+vitis_ai_runtime/
+
+# Simulation & Logs
+*.log
+simulation/digital_twin/logs/
+
+# ONNX Exports
+*.onnx
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo

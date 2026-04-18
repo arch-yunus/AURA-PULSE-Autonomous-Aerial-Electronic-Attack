@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA-EDGE | Tactical Ground Control Station</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="scanline"></div>
+    <div class="noise"></div>
+    
+    <header>
+        <div class="logo">AURA-EDGE <span>SYSTEMS</span></div>
+        <div class="mission-clock" id="clock">MISSION TIME: 00:00:00</div>
+        <div class="status-indicator">
+            <span class="online" id="system-status">SYSTEM: ONLINE</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Left HUD: Telemetry -->
+        <section class="hud-panel hud-left">
+            <div class="hud-card">
+                <h3>VELOCITY</h3>
+                <div class="value" id="val-velocity">352 <span class="unit">km/h</span></div>
+                <div class="progress-bar"><div class="fill" id="fill-velocity" style="width: 88%;"></div></div>
+            </div>
+            <div class="hud-card">
+                <h3>ALTITUDE</h3>
+                <div class="value" id="val-altitude">1,240 <span class="unit">m</span></div>
+                <div class="progress-bar"><div class="fill" id="fill-altitude" style="width: 45%;"></div></div>
+            </div>
+            <div class="hud-card">
+                <h3>SIGNAL RS</h3>
+                <div class="value" id="val-signal">98 <span class="unit">%</span></div>
+                <div class="progress-bar"><div class="fill" id="fill-signal" style="width: 98%;"></div></div>
+            </div>
+        </section>
+
+        <!-- Center HUD: Seeker View -->
+        <section class="hud-center">
+            <div class="seeker-box">
+                <div class="crosshair"></div>
+                <div class="target-locked" id="lock-status">TARGET LOCKED</div>
+                <div class="corner tl"></div>
+                <div class="corner tr"></div>
+                <div class="corner bl"></div>
+                <div class="corner br"></div>
+                
+                <!-- Additional overlay markers -->
+                <div style="position: absolute; bottom: 10px; right: 10px; font-size: 0.7rem; color: var(--text-dim);">
+                    FOV: 120&deg; | SEEKER: IR/VIS
+                </div>
+            </div>
+        </section>
+
+        <!-- Right HUD: Tactical Data -->
+        <section class="hud-panel hud-right">
+            <div class="hud-card">
+                <h3>THREAT LEVEL</h3>
+                <div class="value" style="color: #00ff88; font-size: 1.8rem;" id="val-threat">ALPHA-1 (LOW)</div>
+            </div>
+            <div class="hud-card">
+                <h3>ENERGY ARCH</h3>
+                <div class="value" id="val-battery">82 <span class="unit">%</span></div>
+                <div class="progress-bar"><div class="fill" id="fill-battery" style="width: 82%;"></div></div>
+            </div>
+            <div class="hud-card log-card">
+                <h3>TACTICAL LOGS</h3>
+                <div class="log-entries" id="logs">
+                    <div>[07:15:02] INITIALIZING FHSS HOPS...</div>
+                    <div>[07:15:04] SEEKER SENSOR SYNC: OK</div>
+                    <div>[07:15:08] AES-256 HANDSHAKE COMPLETE</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="coord" id="coords">LAT: 41.0082 | LON: 28.9784</div>
+        <div class="encryption">ENCRYPTION: HARDWARE AES-256 (ACTIVE)</div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

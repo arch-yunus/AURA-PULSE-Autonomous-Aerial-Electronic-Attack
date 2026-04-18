@@ -53,17 +53,34 @@ Aura-Pulse, menzilindeki tehditleri "temizlemek" için gelişmiş **High-Power M
 
 ---
 
-## 📊 4. Global Rakip Analizi (Tactical Benchmark)
+## 📊 4. Küresel Taktik Benchmark (Competitor Analysis)
 
-| Platform | Ülke | Mimari | Yetenek | **Aura-Pulse Üstünlüğü** |
+| Platform | Ülke | Teknoloji | Operasyonel Mod | **Aura-Pulse Avantajı** |
 | :--- | :--- | :--- | :--- | :--- |
-| **Anduril Roadrunner** | 🇺🇸 | Jet-VTOL | Kinetik | **HPM Directed Energy** |
-| **Raytheon Coyote** | 🇺🇸 | Launchable | Multi-role | **Adaptive GaN Solid-State** |
-| **Aura-Pulse** | 🇹🇷 | **Hybrid MPSoC** | **Area Neutralization** | **Hardened Lock-Step Architecture** |
+| **Epirus Leonidas** | 🇺🇸 | Solid-State HPM | Kara Konuşlu / Pod | **Airborne-First Mimarisi** |
+| **LM MORFIUS** | 🇺🇸 | Airborne HPM | Tube-Launched UAS | **Yüksek Manevra & Jet-VTOL Hızı** |
+| **RTX CHIMERA** | 🇺🇸 | Ground HPM Pod | Üs Savunması | **Otonom Centroid Hedefleme** |
+| **DroneShield Sentry-X** | 🇦🇺 | Multi-Sensor Jammer | Mobil Soft-Kill | **Integrated Hard-Kill (HPM)** |
+| **Aura-Pulse** | 🇹🇷 | **Hybrid MPSoC** | **Omni-Directional AOD** | **Budak Engine: Edge-AI Optimized** |
 
 ---
 
-## 📂 5. Repo Hiyerarşisi
+## 🌐 5. Küresel Elektronik Harp (EA) Perspektifi
+
+Aura-Pulse, günümüzün karmaşık harp sahasında rakiplerinden üç temel noktada ayrılır:
+
+> [!TIP]
+> **1. SWaP-C Optimizasyonu:** Raytheon ve Lockheed Martin sistemleri genellikle ağır platformlar gerektirirken, Aura-Pulse GaN tabanlı miniaturize edilmiş güç modülleri sayesinde tek bir personelin kaldırabileceği veya jet-VTOL gövdesine sığacak boyutlardadır.
+
+> [!IMPORTANT]
+> **2. AI Destekli Centroid Hedefleme:** Geleneksel HPM sistemleri "geniş alan" ışınımı yaparken, Aura-Pulse bünyesindeki **Swarm Prioritizer AI**, sürünün yoğunluk merkezini hesaplayarak enerjiyi en verimli noktaya odaklar.
+
+> [!NOTE]
+> **3. Pasif-Öncelikli Doktrin:** Rakiplerin çoğu aktif radar bağımlısıyken, Aura-Pulse **Passive Vision-Only Tracking** ve **Spectral Threat Analysis** modülleri sayesinde "EM sessizliği" (EM silence) içinde hedefine yaklaşır ve son saniyede darbeyi indirir.
+
+---
+
+## 📂 6. Repo Hiyerarşisi
 
 ```bash
 📦 hardware/          # RF tasarımları ve BOM listeleri

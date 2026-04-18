@@ -1,62 +1,55 @@
-/**
- * @file main.cpp
- * @author Aura-Edge Engineering
- * @brief Main entry point for Aura-Edge RPU (Cortex-R5F) Lock-Step Firmware.
- * Target: Xilinx Zynq UltraScale+ MPSoC.
- * @version 1.0
- * @date 2026-04-18
- */
-
 #include <iostream>
-#include "include/pid_controller.hpp"
-
-// Global Autopilot State
-struct FlightState {
-    float roll, pitch, yaw;
-    float throttle;
-    bool armed;
-} g_state = {0.0f, 0.0f, 0.0f, 0.0f, false};
-
-// Controllers for each axis
-PIDController roll_pid(1.2f, 0.1f, 0.05f, 100.0f);
-PIDController pitch_pid(1.2f, 0.1f, 0.05f, 100.0f);
+#include <chrono>
+#include <thread>
+#include "pid_controller.hpp"
 
 /**
- * @brief Initialize Hardware (GIC, PMU, RPU-Lockstep)
+ * AURA-PULSE | Dual-Rate Flight Core
+ * Loop A (1000Hz): Real-time stabilization & PWM output.
+ * Loop B (100Hz): Mission logic, Telemetry, and EA Pulse syncing.
  */
-void system_init() {
-    // Note: In actual implementation, this would involve low-level register 
-    // configuration and GIC initialization.
-    std::cout << "[FIRMWARE] Initializing RPU Cluster 0 in Lock-Step mode..." << std::endl;
-    std::cout << "[FIRMWARE] Fault-Tolerant Memory ECC initialized." << std::endl;
-}
-
-/**
- * @brief 1000Hz Real-Time Flight Loop
- */
-void main_flight_loop() {
-    float dt = 0.001f; // 1ms
-    
-    // 1. Read IMU Data (R5F direct access to PL-AXI)
-    // 2. Compute Control Output
-    float roll_output = roll_pid.compute(0.0f, g_state.roll, dt);
-    float pitch_output = pitch_pid.compute(0.0f, g_state.pitch, dt);
-    
-    // 3. Command ESCs / Actuators
-    // std::cout << "[LOOP] Roll: " << roll_output << " Pitch: " << pitch_output << std::endl;
-}
 
 int main() {
-    system_init();
+    std::cout << "[MAIN] Aura-Pulse Flight Core Booting..." << std::endl;
+
+    // Initialization: Roll, Pitch, Yaw controllers
+    PIDController roll_ctrl(1.5, 0.1, 0.05, 0.001);
+    PIDController pitch_ctrl(1.5, 0.1, 0.05, 0.001);
     
-    std::cout << "[FIRMWARE] Aura-Edge Flight Core Online." << std::endl;
-    
-    // Simulation of a high-speed loop
-    for(int i = 0; i < 100; ++i) {
-        main_flight_loop();
+    bool mission_active = true;
+    auto last_loop_b = std::chrono::steady_clock::now();
+    uint64_t ticks = 0;
+
+    std::cout << "[MAIN] Entering Real-Time Mission Loop." << std::endl;
+
+    while (mission_active) {
+        auto now = std::chrono::steady_clock::now();
+        
+        // --- LOOP A (1000Hz) ---
+        // Simulating 1ms sleep for the fast loop
+        // In real HW, this would be triggered by a Timer Interrupt.
+        
+        double roll_out = roll_ctrl.calculate(0, 0.5, -1, 1);
+        double pitch_out = pitch_ctrl.calculate(0, -0.2, -1, 1);
+        
+        ticks++;
+
+        // --- LOOP B (100Hz) ---
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_loop_b).count() >= 10) {
+            // Mission Logic & Telemetry
+            if (ticks % 1000 == 0) {
+                std::cout << "[TELEMETRY] Mission State: NOMINAL | Ticks: " << ticks << std::endl;
+            }
+            
+            last_loop_b = now;
+        }
+
+        // Safety check to exit simulation loop
+        if (ticks > 5000) mission_active = false;
+        
+        std::this_thread::sleep_for(std::chrono::microseconds(1000));
     }
-    
-    std::cout << "[FIRMWARE] Initial safety checks passed. Ready for mission." << std::endl;
-    
+
+    std::cout << "[MAIN] Aura-Pulse Flight Core Shutdown." << std::endl;
     return 0;
 }

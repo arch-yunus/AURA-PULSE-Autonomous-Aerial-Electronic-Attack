@@ -1,42 +1,32 @@
-# Aura-Edge: Tactical Bill of Materials (BOM)
+# Bill of Materials (BOM) - Aura-Pulse Tactical System
 
-This document lists the core hardware components required to build an Aura-Edge Kinetic Intelligence platform.
+## 1. Primary Flight Computing (MPSoC)
+| Item | Component | Specification | Function |
+| :--- | :--- | :--- | :--- |
+| **MP-001** | **Xilinx Zynq UltraScale+ ZU3EG** | Quad-core ARM A53 + FPGA | Core Mission Logic & DPU |
+| **MP-002** | **Inforce 6640** | Snapdragon 820 Base | Computer Vision / Seeker Backup |
+| **MP-003** | **STM32H743II** | 480MHz Cortex-M7 | Real-time RPU (Flight Safety) |
 
-## 1. Core Processing Unit
-| Component | Specification | Purpose |
-| :--- | :--- | :--- |
-| **SoC** | Xilinx Zynq UltraScale+ XCZU3EG | Heterogeneous MPSoC for AI & Real-Time Control |
-| **RAM** | 4GB LPDDR4 (High Bandwidth) | Fast data access for DPU and Vision pipelines |
-| **Storage** | 16GB eMMC 5.1 + MicroSD (UHS-II) | Bootloader and OS Layer |
+## 2. RF & Electronic Attack (EA) Payloads
+| Item | Component | Specification | Function |
+| :--- | :--- | :--- | :--- |
+| **RF-001** | **Transcom GaN SSPA** | 2-6 GHz, 100W Pulsed | HPM Burst Core |
+| **RF-002** | **ADI AD9361** | 70 MHz - 6 GHz | Wideband RF Transceiver |
+| **RF-003** | **SKYWORKS SKY66403** | 2.4GHz Front-end | FHSS Telemetry Boost |
 
-## 2. Flight / Kinetic Hardware
-| Component | Specification | Purpose |
-| :--- | :--- | :--- |
-| **Fuselage** | Cylindrical Carbon-Fiber Composite | Vertical airframe optimized for high-speed intercept |
-| **Propulsion** | Micro-Turbojet + 4x Brushless Motors | Hybrid jet-VTOL system for rapid ascent and speed |
-| **IMU** | Bosch BMI088 (High-G) | 6-axis inertial measurement for high-speed flight |
-| **Barometer** | BMP388 | High-precision altitude measurement |
-| **ESC** | 65A BLHeli_32 (High Voltage) | Control for hybrid propulsion motors |
-| **GPS** | u-blox NEO-M9N (Multi-Constellation) | Global positioning (Backup for Visual Odometry) |
+## 3. Sensors & Guidance (IMU/Optical)
+| Item | Component | Specification | Function |
+| :--- | :--- | :--- | :--- |
+| **SN-001** | **Honeywell HG1120** | MEMS Gyro/Accel | Tactical Grade Navigation |
+| **SN-002** | **Sony IMX477** | 12.3MP BSI CMOS | Primary Seeker Vision |
+| **SN-003** | **u-blox ZED-F9P** | Multi-band GNSS | High Precision Pos (Simulated) |
 
-## 3. Communication & RF
-| Component | Specification | Purpose |
-| :--- | :--- | :--- |
-| **SDR Frontend** | AD9361 (Wideband Transceiver) | Cognitive radio and spectrum sensing (EH Resilience) |
-| **Radio Modem** | 7 GHz FHSS Transceiver (Custom IP) | Jamming-resistant telemetry link |
-| **Antenna** | 5.8 GHz Rhombic (High Gain) | Long-range video transmission |
-
-## 4. Optical Seeker
-| Component | Specification | Purpose |
-| :--- | :--- | :--- |
-| **Camera** | Sony IMX477 (MIPI Interface) | 12MP high-resolution vision |
-| **Lens** | 12mm IR-Cut (Low Distortion) | Precision target identification |
-
-## 5. Power & Thermal
-| Component | Specification | Purpose |
-| :--- | :--- | :--- |
-| **Battery** | 6S 4500mAh 120C LiPo | High discharge rate for kinetic engagement |
-| **Thermal** | Active Copper Heat-Spreader | Cooling for UltraScale+ DPU operations |
+## 4. Power & Propulsion (High-Speed Jet-VTOL)
+| Item | Component | Specification | Function |
+| :--- | :--- | :--- | :--- |
+| **PW-001** | **JetCat P100-RX** | 100N Micro-Turbine | Main Vertical Propulsion |
+| **PW-002** | **T-Motor U8 II** | 100KV Brushless | Stabilization Rotors |
+| **PW-003** | **LiPo 12S 5000mAh** | 60C High-Discharge | Emergency Power & Motor Drive |
 
 ---
-**Note:** All PCB designs must utilize **Isola Astra MT77** laminate for high-frequency signal integrity.
+**All components must meet MIL-STD-810H for vibration and thermal shock.**

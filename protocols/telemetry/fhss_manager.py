@@ -1,57 +1,59 @@
 import random
-import time
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(name)s] %(message)s')
+logger = logging.getLogger("FHSS_Manager")
 
 class FHSSManager:
     """
-    Electronic Warfare Resilience: Frequency Hopping Spread Spectrum (FHSS) Manager.
-    Simulates hopping across 7 GHz narrow-band channels to evade jamming.
+    AURA-PULSE | Adaptive Frequency Hopping Spread Spectrum (FHSS) Manager.
+    Features: Intelligent channel blacklisting based on RSSI feedback.
     """
     
-    def __init__(self, channels=1024, hop_interval_ms=10):
-        self.channels = list(range(channels))
-        self.blacklist = set() # Channels flagged as "Jammed"
-        self.hop_interval = hop_interval_ms / 1000.0
-        self.current_channel = random.choice(self.channels)
-        self.secret_seed = 0xDEADBEEF 
-        random.seed(self.secret_seed)
-        print(f"[FHSS] Manager active. Seed: {hex(self.secret_seed)}, Channels: {channels}")
-
-    def detect_interference(self, channel, rssi):
-        """
-        Cognitive Radio Logic: Detects if a channel is being jammed.
-        If RSSI is above a threshold without a valid packet, blacklist it.
-        """
-        JAM_THRESHOLD = -40 # dBm (High signal noise)
-        if rssi > JAM_THRESHOLD:
-            if channel not in self.blacklist:
-                print(f"[FHSS] ! EW ALERT ! Jamming detected on CH {channel}. Blacklisting.")
-                self.blacklist.add(channel)
-                return True
-        return False
+    def __init__(self, channel_count=1024, seed=0xdeadbeef):
+        self.channels = list(range(channel_count))
+        self.seed = seed
+        random.seed(self.seed)
+        
+        # Performance Tracking
+        self.blacklist = set()
+        self.history = {} # channel: last_rssi
+        self.noise_threshold = -95 # dBm
+        
+        logger.info(f"FHSS initialized. Total Channels: {channel_count} | Seed: {hex(seed)}")
 
     def get_next_hop(self):
         """
-        Calculates the next frequency channel, avoiding the blacklist.
+        Returns the next frequency channel in the sequence, avoiding the blacklist.
         """
         while True:
-            ch = random.choice(self.channels)
-            if ch not in self.blacklist:
-                self.current_channel = ch
-                return ch
-            # If ch is blacklisted, loop continues to find a clean channel
+            hop = random.randint(0, len(self.channels) - 1)
+            if hop not in self.blacklist:
+                return hop
+            # If too many channels are blacklisted, clear oldest to maintain link
+            if len(self.blacklist) > (len(self.channels) * 0.7):
+                logger.warning("RF Environment critical. Pruning oldest blacklist entries.")
+                self.blacklist.clear()
 
-    def transmit(self, data, rssi_feedback=-110):
+    def transmit(self, data, rssi_feedback=None):
         """
-        Simulates data transmission with spectrum sensing.
+        Simulates transmission with adaptive interference avoidance.
         """
-        ch = self.get_next_hop()
-        self.detect_interference(ch, rssi_feedback)
-        return ch
+        current_channel = self.get_next_hop()
+        
+        if rssi_feedback is not None:
+            if rssi_feedback < self.noise_threshold:
+                if current_channel not in self.blacklist:
+                    logger.warning(f"EW ALERT: Noise floor violation on CH {current_channel}. Blacklisting.")
+                    self.blacklist.add(current_channel)
+        
+        # Simulate transmission logic
+        return {"channel": current_channel, "status": "TX_SUCCESS", "adaptive": True}
 
 if __name__ == "__main__":
-    fhss = FHSSManager()
-    print("[FHSS] Starting hop sequence...")
-    for _ in range(5):
-        ch = fhss.transmit("TELEMETRY_PACKET")
-        print(f"  -> Hopped to CH {ch}")
-        time.sleep(0.05)
+    manager = FHSSManager()
+    # Simulate a jammed environment
+    for _ in range(10):
+        res = manager.transmit("TACTICAL_DATA", rssi_feedback=-110) # Heavy noise
+        print(f"Hop Result: {res}")
+    print(f"Final Blacklist Size: {len(manager.blacklist)}")

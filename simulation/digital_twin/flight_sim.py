@@ -57,13 +57,19 @@ class AuraEdgeSim:
         while time.time() - start_time < duration_sec:
             elapsed = time.time() - start_time
             
+            # --- STOCHASTIC ENVIRONMENTAL NOISE ---
+            # Simulating wind turbulence (influences stabilization ticks)
+            wind_noise = random.uniform(-0.1, 0.1)
+            # Simulating multi-path RF noise
+            rf_noise = random.uniform(0, 5) # Added latency/jitter in dB
+            
             # 1. Seeker Process
             import numpy as np
             frame = np.zeros((640, 640, 3), dtype=np.uint8)
             seeker_data = self.seeker.process_frame(frame)
             
             # 2. Spectral Threat Analysis
-            sim_rssi = -110 + random.random() * 80
+            sim_rssi = (-110 + random.random() * 80) - rf_noise
             sim_bw = random.random() * 200
             threat_report = self.analyzer.analyze_spectrum({"rssi": sim_rssi, "bandwidth": sim_bw})
             
@@ -80,7 +86,7 @@ class AuraEdgeSim:
             # 5. Tactical Logging
             status_color = GREEN if active_targets == 0 else YELLOW
             log_hdr = f"{status_color}T+{elapsed:05.2f}s{RESET} | "
-            log_body = f"ACTIVE_HOSTILES: {active_targets} | LOCK: {seeker_data['locked']} | THREAT: {threat_report['type']}"
+            log_body = f"HOSTILES: {active_targets} | LOCK: {seeker_data['locked']} | WIND_DV: {wind_noise:+.2f} | RF_JV: {rf_noise:.1f}dB"
             print(f"{log_hdr}{log_body}")
             
             time.sleep(1.0) 

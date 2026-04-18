@@ -1,49 +1,54 @@
-/**
- * @file pid_controller.hpp
- * @author Aura-Edge Engineering
- * @brief High-fidelity PID control for stable VTOL and high-speed kinetic flight.
- * @version 1.0
- * @date 2026-04-18
- */
+#pragma once
+#include <algorithm>
 
-#ifndef PID_CONTROLLER_HPP
-#define PID_CONTROLLER_HPP
+/**
+ * AURA-PULSE | Advanced Tactical PID Controller
+ * Features: Integral Windup Protection (Clamping), Derivative Low-Pass Filtering.
+ */
 
 class PIDController {
 public:
-    PIDController(float kp, float ki, float kd, float limit)
-        : _kp(kp), _ki(ki), _kd(kd), _limit(limit), _integral(0), _last_error(0) {}
+    PIDController(double kp, double ki, double kd, double dt, double tau = 0.01)
+        : kp(kp), ki(ki), kd(kd), dt(dt), tau(tau),
+          integral(0), prev_error(0), prev_d(0) {}
 
-    float compute(float setpoint, float current, float dt) {
-        float error = setpoint - current;
-        _integral += error * dt;
-        
-        // Anti-windup
-        if (_integral > _limit) _integral = _limit;
-        if (_integral < -_limit) _integral = -_limit;
+    double calculate(double setpoint, double current_value, double limit_min, double limit_max) {
+        double error = setpoint - current_value;
 
-        float derivative = (error - _last_error) / dt;
-        _last_error = error;
+        // Proportional term
+        double p = kp * error;
 
-        float output = (_kp * error) + (_ki * _integral) + (_kd * derivative);
-        
-        // Output saturation
-        if (output > _limit) output = _limit;
-        if (output < -_limit) output = -_limit;
+        // Integral term with Clamping (Anti-windup)
+        integral += ki * error * dt;
+        integral = std::max(limit_min, std::min(limit_max, integral));
+
+        // Derivative term with Low-pass Filtering
+        // D(s) = Kd * s / (tau * s + 1)
+        double d = (2.0 * kd * (error - prev_error) + (2.0 * tau - dt) * prev_d) / (2.0 * tau + dt);
+
+        double output = p + integral + d;
+
+        // Final output saturation
+        output = std::max(limit_min, std::min(limit_max, output));
+
+        // State update
+        prev_error = error;
+        prev_d = d;
 
         return output;
     }
 
     void reset() {
-        _integral = 0;
-        _last_error = 0;
+        integral = 0;
+        prev_error = 0;
+        prev_d = 0;
     }
 
 private:
-    float _kp, _ki, _kd;
-    float _limit;
-    float _integral;
-    float _last_error;
+    double kp, ki, kd;
+    double dt;   // Sampling time
+    double tau;  // D-term filter time constant
+    double integral;
+    double prev_error;
+    double prev_d;
 };
-
-#endif // PID_CONTROLLER_HPP

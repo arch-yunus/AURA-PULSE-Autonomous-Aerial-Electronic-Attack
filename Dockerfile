@@ -1,27 +1,39 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12-slim
+# AURA-PULSE | Standardized Development Environment
+# Targeted for cross-compilation and tactical simulation.
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+FROM debian:bookworm-slim
 
-# Install system dependencies
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install core build tools and dependencies
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    && rm -rf /var/lib/apt/get/lists/*
+    build-essential \
+    cmake \
+    gcc-arm-none-eabi \
+    libnewlib-arm-none-eabi \
+    git \
+    python3 \
+    python3-pip \
+    python3-venv \
+    curl \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory in the container
-WORKDIR /app
+# Set up Python tactical environment
+RUN python3 -m pip install --upgrade pip --break-system-packages && \
+    pip install --break-system-packages \
+    numpy \
+    torch \
+    opencv-python-headless \
+    flake8 \
+    pytest
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Set workspace
+WORKDIR /workspace
 
-# Install Python dependencies
-RUN pip install --no-cache-dir torch numpy opencv-python
+# Copy manifestos and setup scripts
+COPY . .
 
-# Make port 80 available to the world outside this container (for GCS if served)
-EXPOSE 80
-
-# Run the simulation by default
-CMD ["python", "simulation/digital_twin/flight_sim.py"]
+# Default command: run lint and sim
+CMD ["make", "lint", "sim"]

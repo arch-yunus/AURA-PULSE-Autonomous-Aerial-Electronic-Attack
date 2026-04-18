@@ -69,8 +69,19 @@ class AuraEdgeSim:
             seeker_data = self.seeker.process_frame(frame)
             
             # 2. Spectral Threat Analysis
-            sim_rssi = (-110 + random.random() * 80) - rf_noise
-            sim_bw = random.random() * 200
+            # New in v13.0: 10% chance of an advanced LPI radar threat
+            dice = random.random()
+            if dice > 0.95:
+                # LFMCW Radar
+                sim_rssi, sim_bw = -50, 5
+            elif dice > 0.90:
+                # Barker Spoofer
+                sim_rssi, sim_bw = -40, 1
+            else:
+                # Standard noisy environment
+                sim_rssi = (-110 + random.random() * 80) - rf_noise
+                sim_bw = random.random() * 200
+            
             threat_report = self.analyzer.analyze_spectrum({"rssi": sim_rssi, "bandwidth": sim_bw})
             
             # 3. Decision Logic: Trigger HPM if threat is critical (e.g. Jammer)

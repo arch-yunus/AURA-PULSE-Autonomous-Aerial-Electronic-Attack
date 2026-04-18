@@ -54,21 +54,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(updateTelemetry, 500);
 
-    // 3. Tactical Logging
-    const addLog = (msg) => {
+    // 3. Tactical Logging with Persistence
+    const addLog = (msg, persist = true) => {
         const time = new Date().toLocaleTimeString();
         const entry = document.createElement('div');
-        entry.textContent = `[${time}] ${msg}`;
+        const logMsg = `[${time}] ${msg}`;
+        entry.textContent = logMsg;
         logsEl.prepend(entry);
         if (logsEl.children.length > 8) logsEl.lastChild.remove();
+
+        if (persist) {
+            let history = JSON.parse(localStorage.getItem('aura_mission_logs') || "[]");
+            history.unshift(logMsg);
+            localStorage.setItem('aura_mission_logs', JSON.stringify(history.slice(0, 50)));
+        }
     };
+
+    // Initialize logs from memory
+    const initLogs = () => {
+        let history = JSON.parse(localStorage.getItem('aura_mission_logs') || "[]");
+        history.reverse().forEach(msg => {
+            const entry = document.createElement('div');
+            entry.textContent = msg;
+            logsEl.prepend(entry);
+        });
+        addLog("SESSION RECOVERED: MISSION LOGS LOADED FROM NV-RAM", false);
+    };
+
+    initLogs();
 
     const events = [
         "FHSS CHANNEL HOP: CH " + Math.floor(Math.random() * 1024),
         "SEEKER SENSOR SYNC: OK",
         "AES-256 LINK VERIFIED",
         "ANALYZING SPECTRAL THREATS...",
-        "VO-SYNC RE-CALIBRATION..."
+        "VO-SYNC RE-CALIBRATION...",
+        "SIGINT: BARKER_13 PATTERN MATCHED",
+        "FAILSAFE: RTH PARAMETERS UPDATED"
     ];
 
     setInterval(() => {

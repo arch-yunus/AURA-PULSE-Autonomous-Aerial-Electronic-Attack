@@ -1,4 +1,5 @@
 import numpy as np
+import random
 import logging
 
 logging.basicConfig(level=logging.INFO, format='[%(name)s] %(message)s')
@@ -18,21 +19,49 @@ class ThreatAnalyzer:
         }
         logger.info("Threat Analysis System Online. Spectral database synchronized.")
 
-    def analyze_spectrum(self, signal_metadata):
+    def analyze_spectrum(self, rf_data):
         """
-        Analyzes incoming RF metadata to classify potential threats.
-        signal_metadata: dict containing 'rssi', 'bandwidth', 'hop_rate'.
+        Simulates advanced spectral analysis of incoming RF signals.
+        New in v13.0: Pattern recognition for Barker Codes and LFMCW.
         """
-        rssi = signal_metadata.get('rssi', -120)
-        bw = signal_metadata.get('bandwidth', 0)
+        rssi = rf_data.get("rssi", -110)
+        bw = rf_data.get("bandwidth", 0)
         
-        # Simple heuristic for demonstration
-        if rssi > -40 and bw > 100:
-            return self._classify("WIDEBAND_JAMMER")
-        elif bw < 5 and signal_metadata.get('hop_rate', 0) > 1000:
-            return self._classify("LPI_RADAR")
+        # New: Pattern Match Simulation
+        # In a real system, this would be an FFT-based correlation or CNN classifier.
+        patterns = ["NOMINAL", "WIDEBAND_JAMMER", "BARKER_13_SPOOFER", "LFMCW_LPI_RADAR"]
         
-        return {"type": "NOMINAL", "priority": 0, "action": "CONTINUE_MISSION"}
+        threat_type = "NOMINAL"
+        priority = 1
+        action = "CONTINUE_MISSION"
+
+        if rssi > -80:
+            if bw > 50:
+                threat_type = "WIDEBAND_JAMMER"
+                priority = 5
+                action = "INITIATE_FHSS_COUNTERLEVEL_A"
+            elif 2 < bw <= 10:
+                # LFMCW Pattern (Linear Frequency Modulated Continuous Wave)
+                threat_type = "LFMCW_LPI_RADAR"
+                priority = 4
+                action = "ENABLE_EM_SILENCE_FLIGHT"
+            elif bw <= 2:
+                # Barker Code Pattern (Pulse Compression / Spoofing)
+                threat_type = "BARKER_13_SPOOFER"
+                priority = 3
+                action = "VALIDATE_TELEMETRY_CHECKSUM"
+
+        report = {
+            "type": threat_type,
+            "priority": priority,
+            "action": action,
+            "confidence": random.uniform(0.85, 0.99) if threat_type != "NOMINAL" else 1.0
+        }
+        
+        if threat_type != "NOMINAL":
+            logger.warning(f"THREAT DETECTED: {threat_type} | Priority: {priority} | Action: {action}")
+        
+        return report
 
     def _classify(self, threat_type):
         threat = self.threat_database.get(threat_type)

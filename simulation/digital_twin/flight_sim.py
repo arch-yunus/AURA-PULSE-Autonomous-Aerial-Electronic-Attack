@@ -21,18 +21,38 @@ RESET = "\033[0m"
 class AuraEdgeSim:
     """
     Digital Twin Simulation for Aura-Edge.
-    Integrates Seeker Logic, Threat Analysis, and FHSS Resilience.
+    Integrates Seeker Logic, Threat Analysis, and HPM Electronic Attack.
     """
     
     def __init__(self):
         self.seeker = SeekerLogic()
         self.analyzer = ThreatAnalyzer()
         self.telemetry = FHSSManager()
-        print(f"{BLUE}{BOLD}[INIT] Aura-Edge Digital Twin System Online.{RESET}")
+        
+        # Virtual Swarm: List of (id, distance_m, status)
+        self.swarm = [[i, random.randint(50, 300), "ACTIVE"] for i in range(10)]
+        
+        print(f"{BLUE}{BOLD}[INIT] Aura-Pulse Digital Twin System Online.{RESET}")
+        print(f"{BLUE}[INIT] Virtual Swarm Detected: {len(self.swarm)} hostiles in vicinity.{RESET}")
 
-    def run_mission(self, duration_sec=10):
+    def trigger_hpm_burst(self):
+        """
+        Simulates an HPM burst neutralizing all active targets within 150m.
+        """
+        print(f"{RED}{BOLD}[EA] EXECUTING HPM BURST...{RESET}")
+        neutralized_count = 0
+        for target in self.swarm:
+            if target[2] == "ACTIVE" and target[1] <= 150:
+                target[2] = "NEUTRALIZED"
+                neutralized_count += 1
+        
+        print(f"{RED}[EA] Burst Complete. {neutralized_count} targets neutralized via HARD-KILL.{RESET}")
+        return neutralized_count
+
+    def run_mission(self, duration_sec=15):
         print(f"{YELLOW}[MISSION] Starting {duration_sec}s tactical simulation...{RESET}")
         start_time = time.time()
+        ea_triggered = False
         
         while time.time() - start_time < duration_sec:
             elapsed = time.time() - start_time
@@ -43,21 +63,24 @@ class AuraEdgeSim:
             seeker_data = self.seeker.process_frame(frame)
             
             # 2. Spectral Threat Analysis
-            # Simulate random RF environments
             sim_rssi = -110 + random.random() * 80
             sim_bw = random.random() * 200
             threat_report = self.analyzer.analyze_spectrum({"rssi": sim_rssi, "bandwidth": sim_bw})
             
-            # 3. Decision Logic based on Threat
-            status_color = GREEN
-            if threat_report['priority'] > 3:
-                status_color = RED
-                # Dynamic FHSS adjustment simulation
-                self.telemetry.transmit("DATA_SYNC", rssi_feedback=sim_rssi)
+            # 3. Decision Logic: Trigger HPM if threat is critical (e.g. Jammer)
+            if threat_report['type'] == "WIDEBAND_JAMMER" and not ea_triggered:
+                print(f"{YELLOW}[DECISION] Critical threat detected. Charging HPM...{RESET}")
+                time.sleep(1.0) # Simulation of charge time
+                self.trigger_hpm_burst()
+                ea_triggered = True
             
-            # 4. Tactical Logging
+            # 4. Swarm Status
+            active_targets = len([t for t in self.swarm if t[2] == "ACTIVE"])
+            
+            # 5. Tactical Logging
+            status_color = GREEN if active_targets == 0 else YELLOW
             log_hdr = f"{status_color}T+{elapsed:05.2f}s{RESET} | "
-            log_body = f"LOCK: {seeker_data['locked']} | THREAT: {threat_report['type']} | ACT: {threat_report['action']}"
+            log_body = f"ACTIVE_HOSTILES: {active_targets} | LOCK: {seeker_data['locked']} | THREAT: {threat_report['type']}"
             print(f"{log_hdr}{log_body}")
             
             time.sleep(1.0) 

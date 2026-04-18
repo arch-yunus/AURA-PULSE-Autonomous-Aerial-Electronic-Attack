@@ -62,6 +62,22 @@
                 <h3>THREAT LEVEL</h3>
                 <div class="value" style="color: #00ff88; font-size: 1.8rem;" id="val-threat">ALPHA-1 (LOW)</div>
             </div>
+            
+            <!-- NEW: ELECTRONIC ATTACK PANEL -->
+            <div class="hud-card ea-card">
+                <h3>ELECTRONIC ATTACK (HPM)</h3>
+                <div class="ea-status">
+                    <span id="ea-mode">MODE: BURST</span> | <span id="ea-status">STATUS: STANDBY</span>
+                </div>
+                <div class="progress-bar hpm-charge">
+                    <div class="fill" id="hpm-bar" style="width: 0%; background: #ff3300; box-shadow: 0 0 10px #ff3300;"></div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button id="btn-charge" class="hud-btn">CHARGE</button>
+                    <button id="btn-fire" class="hud-btn fire-disabled">FIRE BURST</button>
+                </div>
+            </div>
+
             <div class="hud-card">
                 <h3>ENERGY ARCH</h3>
                 <div class="value" id="val-battery">82 <span class="unit">%</span></div>

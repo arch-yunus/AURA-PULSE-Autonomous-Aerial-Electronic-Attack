@@ -1,5 +1,5 @@
 // AURA-EDGE | Tactical GCS Logic
-// Manages telemetry streams and HUD interactivity
+// Manages telemetry streams, HUD interactivity, and Electronic Attack (EA) payloads
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("AURA-EDGE Tactical GCS Initialized.");
@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const clockEl = document.getElementById('clock');
     const logsEl = document.getElementById('logs');
     const lockStatusEl = document.getElementById('lock-status');
+    const btnCharge = document.getElementById('btn-charge');
+    const btnFire = document.getElementById('btn-fire');
+    const hpmBar = document.getElementById('hpm-bar');
+    const hpmStatus = document.getElementById('ea-status');
     
     // 1. Mission Clock
     let seconds = 0;
@@ -21,51 +25,124 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Telemetry Simulation
     const updateTelemetry = () => {
-        // Velocity (320-360 km/h)
+        // Velocity (345-360 km/h)
         const velocity = (345 + Math.random() * 15).toFixed(0);
-        document.getElementById('val-velocity').innerHTML = `${velocity} <span class="unit">km/h</span>`;
-        document.getElementById('fill-velocity').style.width = `${(velocity / 400) * 100}%`;
+        const velEl = document.getElementById('val-velocity');
+        const velFill = document.getElementById('fill-velocity');
+        if (velEl) velEl.innerHTML = `${velocity} <span class="unit">km/h</span>`;
+        if (velFill) velFill.style.width = `${(velocity / 400) * 100}%`;
 
-        // Altitude (1200-1300 m)
+        // Altitude (1230-1250 m)
         const altitude = (1230 + Math.random() * 20).toLocaleString();
-        document.getElementById('val-altitude').innerHTML = `${altitude} <span class="unit">m</span>`;
+        const altEl = document.getElementById('val-altitude');
+        if (altEl) altEl.innerHTML = `${altitude} <span class="unit">m</span>`;
         
-        // Battery (Slow drain simulation)
+        // Battery (Slow drain)
         const battery = (82 - (seconds / 100)).toFixed(1);
-        document.getElementById('val-battery').innerHTML = `${battery} <span class="unit">%</span>`;
-        document.getElementById('fill-battery').style.width = `${battery}%`;
+        const battEl = document.getElementById('val-battery');
+        const battFill = document.getElementById('fill-battery');
+        if (battEl) battEl.innerHTML = `${battery} <span class="unit">%</span>`;
+        if (battFill) battFill.style.width = `${battery}%`;
 
-        // Signal (Fluctuating)
+        // Signal
         const signal = (95 + Math.random() * 5).toFixed(0);
-        document.getElementById('val-signal').innerHTML = `${signal} <span class="unit">%</span>`;
-        document.getElementById('fill-signal').style.width = `${signal}%`;
+        const sigEl = document.getElementById('val-signal');
+        const sigFill = document.getElementById('fill-signal');
+        if (sigEl) sigEl.innerHTML = `${signal} <span class="unit">%</span>`;
+        if (sigFill) sigFill.style.width = `${signal}%`;
+    };
 
-        // Randomly update artificial horizon tilt
-        const horizon = document.querySelector('.horizon-line');
-        const tilt = (Math.random() - 0.5) * 4;
-        horizon.style.transform = `rotate(${tilt}deg)`;
-function addLog() {
-    const logs = document.getElementById('logs');
-    const messages = [
-        "FHSS Channel Hop: CH " + Math.floor(Math.random() * 1024),
-        "Seeker Sync: Phase 1 OK",
-        "Visual Odometry: Delta X=" + (Math.random() * 0.1).toFixed(3),
-        "AES-256 Handshake Verified"
-    ];
-    
-    setInterval(() => {
-        const entry = document.createElement('div');
+    setInterval(updateTelemetry, 500);
+
+    // 3. Tactical Logging
+    const addLog = (msg) => {
         const time = new Date().toLocaleTimeString();
-        entry.innerText = `[${time}] ${messages[Math.floor(Math.random() * messages.length)]}`;
-        logs.prepend(entry);
-        if (logs.children.length > 5) logs.lastElementChild.remove();
-    }, 3000);
-}
+        const entry = document.createElement('div');
+        entry.textContent = `[${time}] ${msg}`;
+        logsEl.prepend(entry);
+        if (logsEl.children.length > 8) logsEl.lastChild.remove();
+    };
 
-// Initialize GCS
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("AURA-EDGE GCS Booting...");
-    setInterval(updateClock, 1000);
-    simulateTelemetry();
-    addLog();
+    const events = [
+        "FHSS CHANNEL HOP: CH " + Math.floor(Math.random() * 1024),
+        "SEEKER SENSOR SYNC: OK",
+        "AES-256 LINK VERIFIED",
+        "ANALYZING SPECTRAL THREATS...",
+        "VO-SYNC RE-CALIBRATION..."
+    ];
+
+    setInterval(() => {
+        if (Math.random() > 0.7) {
+            addLog(events[Math.floor(Math.random() * events.length)]);
+        }
+    }, 4000);
+
+    // 4. Target Lock Simulation
+    setInterval(() => {
+        if (lockStatusEl) {
+            const isLocked = Math.random() > 0.2;
+            lockStatusEl.textContent = isLocked ? "TARGET LOCKED" : "SCANNING...";
+            lockStatusEl.style.color = isLocked ? "#ff3300" : "#00f3ff";
+        }
+    }, 3000);
+
+    // 5. Electronic Attack (HPM) Logic
+    let hpmCharge = 0;
+    let isCharging = false;
+
+    if (btnCharge) {
+        btnCharge.addEventListener('click', () => {
+            if (isCharging || hpmCharge >= 100) return;
+            isCharging = true;
+            btnCharge.textContent = "CHARGING...";
+            hpmStatus.textContent = "STATUS: CHARGING";
+            
+            const chargeInterval = setInterval(() => {
+                hpmCharge += 2;
+                if (hpmBar) hpmBar.style.width = `${hpmCharge}%`;
+                
+                if (hpmCharge >= 100) {
+                    clearInterval(chargeInterval);
+                    isCharging = false;
+                    btnCharge.textContent = "CHARGED";
+                    hpmStatus.textContent = "STATUS: ARMED";
+                    if (btnFire) {
+                        btnFire.classList.remove('fire-disabled');
+                        btnFire.classList.add('fire-ready');
+                    }
+                    addLog("HPM CAPACITOR CORE: 100% ARMED");
+                }
+            }, 100);
+        });
+    }
+
+    if (btnFire) {
+        btnFire.addEventListener('click', () => {
+            if (hpmCharge < 100) return;
+            
+            hpmStatus.textContent = "STATUS: DISCHARGING";
+            btnFire.textContent = "EMITTING...";
+            
+            // Visual feedback
+            document.body.style.filter = "invert(1) contrast(2)";
+            setTimeout(() => { document.body.style.filter = "none"; }, 150);
+            
+            addLog("CRITICAL: HPM BURST EMITTED - AREA NEUTRALIZED");
+            
+            setTimeout(() => {
+                hpmCharge = 0;
+                if (hpmBar) hpmBar.style.width = "0%";
+                hpmStatus.textContent = "STATUS: COOLING";
+                btnCharge.textContent = "CHARGE";
+                btnFire.textContent = "FIRE BURST";
+                btnFire.classList.add('fire-disabled');
+                btnFire.classList.remove('fire-ready');
+                
+                setTimeout(() => {
+                    hpmStatus.textContent = "STATUS: STANDBY";
+                    addLog("HPM SYSTEM: RECOVERY NOMINAL");
+                }, 3000);
+            }, 1000);
+        });
+    }
 });

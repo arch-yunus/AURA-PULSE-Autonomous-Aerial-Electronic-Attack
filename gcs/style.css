@@ -255,6 +255,44 @@ footer {
     background: rgba(0, 0, 0, 0.8);
 }
 
+/* EA DASHBOARD */
+.ea-status {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+}
+
+.hud-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px;
+    font-family: var(--font-header);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hud-btn:hover {
+    border-color: var(--primary-glow);
+    background: rgba(0, 243, 255, 0.1);
+}
+
+.fire-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #ff3300;
+}
+
+.fire-ready {
+    background: rgba(255, 51, 0, 0.2);
+    border-color: #ff3300;
+    color: #ff3300;
+    box-shadow: 0 0 10px rgba(255, 51, 0, 0.3);
+    animation: flash 1s infinite;
+}
+
 /* --- ANIMATIONS --- */
 @keyframes scanline {
     0% { transform: translateY(0); }
@@ -268,5 +306,5 @@ footer {
 
 @keyframes flash {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    50% { opacity: 0.5; }
 }
